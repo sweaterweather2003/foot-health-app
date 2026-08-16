@@ -12,6 +12,7 @@ import { LanguageProvider, useLanguage } from './src/context/LanguageContext';
 import DashboardScreen from './src/screens/DashboardScreen';
 import LiveWalkerScreen from './src/screens/LiveWalkerScreen';
 import FamilyScreen from './src/screens/FamilyScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
 import LanguageScreen from './src/screens/onboarding/LanguageScreen';
 import PhoneScreen from './src/screens/onboarding/PhoneScreen';
@@ -53,6 +54,8 @@ function MainTabs() {
             iconName = focused ? 'walk' : 'walk-outline';
           } else if (route.name === 'Family') {
             iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
           }
 
           return <Ionicons name={iconName} size={26} color={color} />;
@@ -73,6 +76,11 @@ function MainTabs() {
         name="Family"
         component={FamilyScreen}
         options={{ tabBarLabel: tr('familyTab') }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ tabBarLabel: 'Profile' }}
       />
     </Tab.Navigator>
   );

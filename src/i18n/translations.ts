@@ -64,9 +64,6 @@ type TranslationKey =
   | 'incorrectOtp'
   | 'verifying'
   | 'enterCompleteOtp'
-  | 'familyHistory'
-  | 'bloodType'
-  | 'otherConditions'
   | 'contactName'
   | 'contactPhone'
   | 'fullNameRequired'
@@ -98,6 +95,36 @@ type TranslationKey =
   | 'privacyText'
   | 'walkSubtitle'
   | 'walkTip'
+  | 'noProfileYet'
+  | 'noProfileText'
+  | 'logOutAndRegister'
+  | 'logOutQuestion'
+  | 'logOutWarning'
+  | 'cancel'
+  | 'logOut'
+  | 'personal'
+  | 'medicalHistorySection'
+  | 'emergencyContactSection'
+  | 'appSection'
+  | 'fullName'
+  | 'age'
+  | 'gender'
+  | 'weight'
+  | 'height'
+  | 'bloodType'
+  | 'diabetesType'
+  | 'duration'
+  | 'familyHistory'
+  | 'otherConditions'
+  | 'name'
+  | 'phone'
+  | 'language'
+  | 'registeredMobile'
+  | 'dataStoredNote'
+  | 'user'
+  | 'years'
+  | 'kg'
+  | 'cm'
   | 'voice_healthy'
   | 'voice_caution'
   | 'voice_critical'
@@ -207,6 +234,33 @@ const en: Record<TranslationKey, string> = {
   privacyText: 'All information is stored securely on your device and shared only with consented family members.',
   walkSubtitle: 'Walk across the room. Soft, balanced steps light up green!',
   walkTip: 'Tip for ASHA workers: Use this screen when first fitting the smart shoes to teach balanced gait.',
+  noProfileYet: 'No profile yet',
+  noProfileText: 'You skipped registration. Create a profile next time you open the app, or log out and register now.',
+  logOutAndRegister: 'Log out & Register',
+  logOutQuestion: 'Log out?',
+  logOutWarning: 'You will need to register or skip again to use the app.',
+  cancel: 'Cancel',
+  logOut: 'Log out',
+  personal: 'PERSONAL',
+  medicalHistorySection: 'MEDICAL HISTORY',
+  emergencyContactSection: 'EMERGENCY CONTACT',
+  appSection: 'APP',
+  fullName: 'Full Name',
+  age: 'Age',
+  gender: 'Gender',
+  weight: 'Weight',
+  height: 'Height',
+  diabetesType: 'Diabetes Type',
+  duration: 'Duration',
+  name: 'Name',
+  phone: 'Phone',
+  language: 'Language',
+  registeredMobile: 'Registered Mobile',
+  dataStoredNote: 'Your data is stored on this device and shared only with consented family members.',
+  user: 'User',
+  years: 'years',
+  kg: 'kg',
+  cm: 'cm',
   voice_healthy: 'Great job! Your feet are healthy. Keep walking balanced.',
   voice_caution: 'Caution. Please take a short rest. Your feet need a break.',
   voice_critical: 'Alert! Foot health is critical. Sit down immediately.',
@@ -315,6 +369,33 @@ const hi: Record<TranslationKey, string> = {
   privacyText: 'सभी जानकारी आपके डिवाइस पर सुरक्षित रूप से संग्रहीत की जाती है और केवल सहमति वाले परिवार के सदस्यों के साथ साझा की जाती है।',
   walkSubtitle: 'कमरे के आर-पार चलें। नरम, संतुलित कदम हरे रंग में चमकते हैं!',
   walkTip: 'आशा कार्यकर्ताओं के लिए सुझाव: स्मार्ट जूते पहले फिट करते समय संतुलित चाल सिखाने के लिए इस स्क्रीन का उपयोग करें।',
+  noProfileYet: 'अभी कोई प्रोफ़ाइल नहीं है',
+  noProfileText: 'आपने पंजीकरण छोड़ दिया है। अगली बार ऐप खोलते समय प्रोफ़ाइल बनाएं, या बाहर निकलकर अभी रजिस्टर करें।',
+  logOutAndRegister: 'लॉग आउट और रजिस्टर करें',
+  logOutQuestion: 'लॉग आउट?',
+  logOutWarning: 'ऐप का उपयोग करने के लिए आपको फिर से रजिस्टर या स्किप करना होगा।',
+  cancel: 'रद्द करें',
+  logOut: 'लॉग आउट',
+  personal: 'व्यक्तिगत',
+  medicalHistorySection: 'मेडिकल हिस्ट्री',
+  emergencyContactSection: 'आपातकालीन संपर्क',
+  appSection: 'ऐप',
+  fullName: 'पूरा नाम',
+  age: 'उम्र',
+  gender: 'लिंग',
+  weight: 'वजन',
+  height: 'ऊँचाई',
+  diabetesType: 'मधुमेह प्रकार',
+  duration: 'अवधि',
+  name: 'नाम',
+  phone: 'फोन',
+  language: 'भाषा',
+  registeredMobile: 'पंजीकृत मोबाइल',
+  dataStoredNote: 'आपका डेटा इस डिवाइस पर सुरक्षित रूप से संग्रहीत रहता है और केवल सहमति वाले परिवार के सदस्यों के साथ साझा किया जाता है।',
+  user: 'उपयोगकर्ता',
+  years: 'वर्ष',
+  kg: 'किलो',
+  cm: 'सेमी',
   voice_healthy: 'बहुत अच्छा! आपके पैर स्वस्थ हैं। संतुलित चलते रहें।',
   voice_caution: 'सावधान। कृपया थोड़ा आराम करें। आपके पैरों को ब्रेक चाहिए।',
   voice_critical: 'चेतावनी! पैरों की सेहत खराब है। तुरंत बैठ जाएं।',
@@ -423,6 +504,33 @@ const kn: Record<TranslationKey, string> = {
   privacyText: 'ಎಲ್ಲಾ ಮಾಹಿತಿಯನ್ನು ನಿಮ್ಮ ಸೆಲ್ಫೈಟ ಮೇಲೆ ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸಲಾಗುತ್ತದೆ ಮತ್ತು ಕೇವಲ ಒಪ್ಪಿದ ಕುಟುಂಬ ಸದಸ್ಯರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಲಾಗುತ್ತದೆ.',
   walkSubtitle: 'ಕೊಠಡಿಯಲ್ಲಿ ಓಡಾಡಿ. ಮೃದು, ಸಮತೋಲಿತ ಹೆಜ್ಜೆಗಳು ಹಸಿರಾಗಿ ಹೊಳೆಯುತ್ತವೆ!',
   walkTip: 'ಆಶಾ ಕಾರ್ಮಿಕರ ಸಲಹೆ: ಸ್ಮಾರ್ಟ್ ಶೂಗಳನ್ನು ಮೊದಲ ಬಾರಿಗೆ ಹೊಂದಿಸುವಾಗ ಸಮತೋಲಿತ ಹೆಜ್ಜೆಯನ್ನು ಕಲಿಸಲು ಈ ಸ್ಕ್ರೀನ್ ಅನ್ನು ಬಳಸಿ.',
+  noProfileYet: 'ಇನ್ನೂ ಪ್ರೊಫೈಲ್ ಇಲ್ಲ',
+  noProfileText: 'ನೀವು ನೋಂದಣಿ ಮಾಡುವುದನ್ನು ಬಿಟ್ಟುಬಿಟ್ಟಿದ್ದೀರಿ. ಆ್ಯಪ್ ಮರುಜಾರಿಸಿದಾಗ ಪ್ರೊಫೈಲ್ ರಚಿಸಿ, ಅಥವಾ ಲಾಗ್ ಔಟ್ ಮಾಡಿ ಈಗಲೇ ನೋಂದಣಿಸಿ.',
+  logOutAndRegister: 'ಲಾಗ್ ಔಟ್ & ನೋಂದಣಿ',
+  logOutQuestion: 'ಲಾಗ್ ಔಟ್?',
+  logOutWarning: 'ಆ್ಯಪ್ ಬಳಸಲು ನೀವು ಮತ್ತೊಮ್ಮೆ ನೋಂದಣಿ ಅಥವಾ ಸ್ಕಿಪ್ ಮಾಡಬೇಕು.',
+  cancel: 'ರದ್ದುಮಾಡು',
+  logOut: 'ಲಾಗ್ ಔಟ್',
+  personal: 'ವೈಯಕ್ತಿಕ',
+  medicalHistorySection: 'ವೈದ್ಯಕೀಯ ಇತಿಹಾಸ',
+  emergencyContactSection: 'ತುರ್ತು ಸಂಪರ್ಕ',
+  appSection: 'ಆ್ಯಪ್',
+  fullName: 'ಪೂರ್ಣ ಹೆಸರು',
+  age: 'ವಯಸ್ಸು',
+  gender: 'ಲಿಂಗ',
+  weight: 'ವજન',
+  height: 'ಎತ್ತರ',
+  diabetesType: 'ಮಧುಮೇಹದ ಪ್ರಕಾರ',
+  duration: 'ಅವಧಿ',
+  name: 'ಹೆಸರು',
+  phone: 'ಫೋನ್',
+  language: 'ಭಾಷೆ',
+  registeredMobile: 'ನೋಂದಾಯಿತ മൊಬೈಲ್',
+  dataStoredNote: 'ನಿಮ್ಮ ಡೇಟಾ ಈ ಡಿವೈಸ್ನಲ್ಲಿ ಸಂಗ್ರಹ되고 ಕೇವಲ ಒಪ್ಪಿದ ಕುಟುಂಬ ಸದಸ್ಯರೊಂದಿಗೆ ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಲ್ಪಡುತ್ತವೆ.',
+  user: 'ಬಳಕೆದಾರ',
+  years: 'ವರ್ಷಗಳು',
+  kg: 'ಕೆಜಿ',
+  cm: 'ಸೆಂ.ಮೀ',
   voice_healthy: 'ಚೆನ್ನಾಗಿದೆ! ನಿಮ್ಮ ಪಾದಗಳು ಆರೋಗ್ಯವಾಗಿವೆ. ಸಮತೋಲನದಿಂದ ನಡೆಯಿರಿ.',
   voice_caution: 'ಎಚ್ಚರಿಕೆ. ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ವಿಶ್ರಾಂತಿ ತೆಗೆದುಕೊಳ್ಳಿ.',
   voice_critical: 'ಎಚ್ಚರಿಕೆ! ಪಾದಗಳ ಆರೋಗ್ಯ ಕ್ಷೀಣವಾಗಿದೆ. ತಕ್ಷಣ ಕುಳಿತುಕೊಳ್ಳಿ.',
@@ -457,6 +565,34 @@ const te: Record<TranslationKey, string> = {
   warning: 'హెచ్చరిక',
   danger: 'ప్రమాదం',
   yourFeetStatus: 'మీ పాదాల స్థితి',
+  noProfileYet: 'ఇంకా ప్రొఫైల్ లేదు',
+  noProfileText: 'మీరు నమోదు చేయడాన్ని వదిలేశారు. ఆప్ మళ్లీ తెరుచుకున్నప్పుడు ప్రొఫైల్ సృష్టించండి, లేదా లాగ్ అవుట్ చేసి ఇప్పుడు నమోదు చేయండి.',
+  logOutAndRegister: 'లాగ్ అవుట్ & రిజిస్టర్',
+  logOutQuestion: 'లాగ్ అవుట్?',
+  logOutWarning: 'ఆప్‌ను ఉపయోగించడానికి మీరు మళ్లీ నమోదు చేసుకోవాలి లేదా స్కిప్ చేయాలి.',
+  cancel: 'రద్దు చేయి',
+  logOut: 'లాగ్ అవుట్',
+  personal: 'వ్యక్తిగత',
+  medicalHistorySection: 'వైద్య చరిత్ర',
+  emergencyContactSection: 'అత్యవసర సంబంధం',
+  appSection: 'ఆప్',
+  fullName: 'పూర్తి పేరు',
+  age: 'వయస్సు',
+  gender: 'లింగం',
+  weight: 'బరువు',
+  height: 'ఎత్తు',
+  bloodType: 'రక్త వర్గం',
+  diabetesType: 'మధుమేహం రకం',
+  duration: 'వ్యవధి',
+  name: 'పేరు',
+  phone: 'ఫోన్',
+  language: 'భాష',
+  registeredMobile: 'నమోదు చేసిన మొబైల్',
+  dataStoredNote: 'మీ డేటా ఈ పరికరంలో భద్రపరచబడి, అంగీకరించిన కుటుంబ సభ్యులతో మాత్రమే పంచుకోబడుతుంది.',
+  user: 'వినియోగదారు',
+  years: 'సంవత్సరాలు',
+  kg: 'కేజీ',
+  cm: 'సెం.మీ',
   voice_healthy: 'చాలా బాగుంది! మీ పాదాలు ఆరోగ్యంగా ఉన్నాయి. సమతుల్యంగా నడవండి.',
   voice_caution: 'జాగ్రత్త. దయచేసి కొంచెం విశ్రాంతి తీసుకోండి.',
   voice_critical: 'హెచ్చరిక! పాదాల ఆరోగ్యం క్షీణించింది. వెంటనే కూర్చోండి.',
@@ -491,6 +627,34 @@ const ta: Record<TranslationKey, string> = {
   warning: 'எச்சரிக்கை',
   danger: 'ஆபத்து',
   yourFeetStatus: 'உங்கள் பாத நிலை',
+  noProfileYet: 'இன்னும் சுயவிவரம் இல்லை',
+  noProfileText: 'நீங்கள் பதிவு செய்வதைத் தவிர்த்துவிட்டீர்கள். ஆப்பை மீண்டும் திறந்ததும் சுயவிவரத்தை உருவாக்கவும், அல்லது வெளியேறி இப்போது பதிவு செய்யவும்.',
+  logOutAndRegister: 'லாக் அவுட் & பதிவு',
+  logOutQuestion: 'லாக் அவுட்?',
+  logOutWarning: 'ஆப் பயன்படுத்த மீண்டும் பதிவு செய்யவோ அல்லது தவிர்க்கவோ வேண்டும்.',
+  cancel: 'ரத்துசெய்',
+  logOut: 'லாக் அவுட்',
+  personal: 'தனிப்பட்ட',
+  medicalHistorySection: 'மருத்துவ வரலாறு',
+  emergencyContactSection: 'அவசர தொடர்பு',
+  appSection: 'ஆப்',
+  fullName: 'முழுப் பெயர்',
+  age: 'வயது',
+  gender: 'பாலினம்',
+  weight: 'எடை',
+  height: 'உயரம்',
+  bloodType: 'இரத்த வகை',
+  diabetesType: 'சர்க்கரை வியாதி வகை',
+  duration: 'காலம்',
+  name: 'பெயர்',
+  phone: 'தொலைபேசி',
+  language: 'மொழி',
+  registeredMobile: 'பதிவு செய்யப்பட்ட மொபைல்',
+  dataStoredNote: 'உங்கள் தரவு இந்த சாதனத்தில் சேமிக்கப்பட்டு, ஒப்புதல் அளித்த குடும்ப உறுப்பினர்களுடன் மட்டும் பகிரப்படும்.',
+  user: 'பயனர்',
+  years: 'வருடங்கள்',
+  kg: 'கிலோ',
+  cm: 'செ.மீ',
   voice_healthy: 'அருமை! உங்கள் பாதங்கள் ஆரோக்கியமாக உள்ளன. சமநிலையுடன் நடக்கவும்.',
   voice_caution: 'எச்சரிக்கை. தயவுசெய்து சிறிது ஓய்வு எடுங்கள்.',
   voice_critical: 'எச்சரிக்கை! பாத ஆரோக்கியம் மோசமாக உள்ளது. உடனே உட்காருங்கள்.',
@@ -509,9 +673,9 @@ const translations: Record<LanguageCode, Record<TranslationKey, string>> = {
   kn,
   te,
   ta,
-  mr: { ...en },
-  bn: { ...en },
-  gu: { ...en },
+  mr: { ...hi },
+  bn: { ...hi },
+  gu: { ...hi },
 };
 
 export const t = (
