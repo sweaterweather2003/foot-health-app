@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GiantButton from '../../components/GiantButton';
-import { COLORS } from '../../utils/theme';
+import { COLORS, THEME_PALETTE } from '../../utils/theme';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import * as Haptics from 'expo-haptics';
 
 interface Props {
@@ -25,6 +26,8 @@ const OTPScreen: React.FC<Props> = ({ navigation, route }) => {
   const { phone } = route.params;
   const { skipOnboarding, login } = useAuth();
   const { tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [timer, setTimer] = useState(30);
@@ -120,14 +123,53 @@ const OTPScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (_) {}
   };
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        container: { flex: 1, paddingHorizontal: 24 },
+        skipRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 12 },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        skipBtn: { color: palette.neonBlue, fontSize: 15, fontWeight: '700' },
+        content: { flex: 1, justifyContent: 'center', marginTop: -40 },
+        step: { color: palette.neonBlue, fontSize: 13, fontWeight: '700', letterSpacing: 1, marginBottom: 8 },
+        title: { color: palette.white, fontSize: 28, fontWeight: '900' },
+        subtitle: { color: palette.lightGray, fontSize: 15, marginTop: 10, lineHeight: 22 },
+        phoneHighlight: { color: palette.neonBlue, fontWeight: '700' },
+        otpRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 24 },
+        otpBox: { width: 42, height: 52, borderRadius: 12, backgroundColor: palette.cardBg, borderWidth: 2, borderColor: palette.neonBlue, textAlign: 'center', fontSize: 20, fontWeight: '800', color: palette.white },
+        otpBoxFilled: { borderColor: palette.neonGreen },
+        otpBoxError: { borderColor: palette.neonRed },
+        error: { color: palette.neonRed, marginTop: 12, fontSize: 14, fontWeight: '600' },
+        successText: { color: palette.neonGreen, marginTop: 12, fontSize: 14, fontWeight: '700' },
+        resendRow: { marginTop: 18, alignItems: 'center' },
+        timerText: { color: palette.lightGray, fontSize: 13 },
+        resendBtn: { color: palette.neonBlue, fontSize: 14, fontWeight: '800' },
+        demoHint: { color: palette.lightGray, fontSize: 12, marginTop: 20, opacity: 0.8 },
+        footer: { marginBottom: 36 },
+      }),
+    [palette]
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      <StatusBar barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <View style={styles.skipRow}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={skipOnboarding}>
             <Text style={styles.skipBtn}>{tr('skipTest')}</Text>
           </TouchableOpacity>
@@ -196,113 +238,5 @@ const OTPScreen: React.FC<Props> = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  skipRow: {
-    alignItems: 'flex-end',
-    paddingTop: 12,
-  },
-  skipBtn: {
-    color: COLORS.neonBlue,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    marginTop: -40,
-  },
-  step: {
-    color: COLORS.neonBlue,
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginBottom: 8,
-  },
-  title: {
-    color: COLORS.white,
-    fontSize: 28,
-    fontWeight: '900',
-  },
-  subtitle: {
-    color: COLORS.lightGray,
-    fontSize: 15,
-    marginTop: 10,
-    lineHeight: 22,
-  },
-  phoneHighlight: {
-    color: COLORS.neonGreen,
-    fontWeight: '700',
-  },
-  otpRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 36,
-    gap: 8,
-  },
-  otpBox: {
-    flex: 1,
-    height: 58,
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.15)',
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: '800',
-    textAlign: 'center',
-  },
-  otpBoxFilled: {
-    borderColor: COLORS.neonGreen,
-  },
-  otpBoxError: {
-    borderColor: COLORS.neonRed,
-  },
-  error: {
-    color: COLORS.neonRed,
-    marginTop: 14,
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  successText: {
-    color: COLORS.neonGreen,
-    marginTop: 14,
-    fontSize: 15,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  resendRow: {
-    marginTop: 24,
-    alignItems: 'center',
-  },
-  timerText: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-  },
-  resendBtn: {
-    color: COLORS.neonBlue,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  demoHint: {
-    color: COLORS.neonYellow,
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 20,
-    opacity: 0.9,
-  },
-  footer: {
-    marginBottom: 36,
-  },
-});
 
 export default OTPScreen;

@@ -12,9 +12,10 @@ import {
   Platform,
 } from 'react-native';
 import GiantButton from '../../components/GiantButton';
-import { COLORS } from '../../utils/theme';
+import { COLORS, THEME_PALETTE } from '../../utils/theme';
 import { useAuth, PatientProfile } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import * as Haptics from 'expo-haptics';
 
 interface Props {
@@ -31,6 +32,8 @@ const PatientInfoScreen: React.FC<Props> = ({ route }) => {
   const { phone } = route.params;
   const { completeProfile, skipOnboarding } = useAuth();
   const { tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -100,15 +103,63 @@ const PatientInfoScreen: React.FC<Props> = ({ route }) => {
     </TouchableOpacity>
   );
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 16 },
+        step: { color: palette.neonBlue, fontSize: 13, fontWeight: '700', letterSpacing: 1, marginBottom: 2 },
+        title: { color: palette.white, fontSize: 28, fontWeight: '900' },
+        skipBtn: { color: palette.neonBlue, fontSize: 15, fontWeight: '700' },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        scroll: { paddingHorizontal: 20, paddingBottom: 30, paddingTop: 10 },
+        sectionLabel: { color: palette.neonBlue, fontSize: 12, fontWeight: '800', letterSpacing: 1.5, marginTop: 18, marginBottom: 10 },
+        fieldLabel: { color: palette.lightGray, fontSize: 13, fontWeight: '700', marginBottom: 8 },
+        input: { backgroundColor: palette.cardBg, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', color: palette.white, fontSize: 15, marginBottom: 14 },
+        textArea: { minHeight: 90, textAlignVertical: 'top' },
+        row: { flexDirection: 'row', gap: 12, marginBottom: 8 },
+        half: { flex: 1 },
+        chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 },
+        chip: { backgroundColor: palette.cardBg, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', paddingVertical: 10, paddingHorizontal: 12 },
+        chipSelected: { backgroundColor: 'rgba(57, 255, 20, 0.12)', borderColor: palette.neonGreen },
+        chipText: { color: palette.white, fontSize: 13, fontWeight: '700' },
+        chipTextSelected: { color: palette.neonGreen },
+        footer: { paddingHorizontal: 20, paddingBottom: 28, marginTop: 10 },
+        errorRow: { marginTop: 12 },
+        errorText: { color: palette.neonRed, fontSize: 13, fontWeight: '700', marginBottom: 8 },
+        errorBox: {
+          backgroundColor: 'rgba(255, 7, 58, 0.12)',
+          borderRadius: 12,
+          padding: 14,
+          marginTop: 20,
+          borderWidth: 1,
+          borderColor: palette.neonRed,
+        },
+        submitWrap: { marginTop: 32 },
+        privacy: { color: palette.lightGray, fontSize: 12, textAlign: 'center', marginTop: 16, lineHeight: 18, opacity: 0.75 },
+      }),
+    [palette]
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      <StatusBar barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={palette.background} />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {/* Header with Skip */}
         <View style={styles.header}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+          </TouchableOpacity>
           <View>
             <Text style={styles.step}>{tr('step_3_of_3')}</Text>
             <Text style={styles.title}>{tr('patientDetails')}</Text>
@@ -281,129 +332,5 @@ const PatientInfoScreen: React.FC<Props> = ({ route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  step: {
-    color: COLORS.neonBlue,
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  title: {
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: '900',
-    marginTop: 2,
-  },
-  skipBtn: {
-    color: COLORS.neonBlue,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  scroll: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-  },
-  sectionLabel: {
-    color: COLORS.neonBlue,
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-    marginTop: 28,
-    marginBottom: 14,
-  },
-  fieldLabel: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.12)',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  half: {
-    flex: 1,
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: COLORS.cardBg,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.15)',
-  },
-  chipSelected: {
-    backgroundColor: 'rgba(57, 255, 20, 0.15)',
-    borderColor: COLORS.neonGreen,
-  },
-  chipText: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  chipTextSelected: {
-    color: COLORS.neonGreen,
-    fontWeight: '800',
-  },
-  errorBox: {
-    backgroundColor: 'rgba(255, 7, 58, 0.12)',
-    borderRadius: 12,
-    padding: 14,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: COLORS.neonRed,
-  },
-  errorText: {
-    color: COLORS.neonRed,
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  submitWrap: {
-    marginTop: 32,
-  },
-  privacy: {
-    color: COLORS.lightGray,
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 16,
-    lineHeight: 18,
-    opacity: 0.75,
-  },
-});
 
 export default PatientInfoScreen;

@@ -8,7 +8,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import { COLORS } from '../utils/theme';
+import { COLORS, THEME_PALETTE } from '../utils/theme';
 import FootAvatar from '../components/FootAvatar';
 import HealthRing from '../components/HealthRing';
 import GiantButton from '../components/GiantButton';
@@ -16,11 +16,14 @@ import AlertBanner from '../components/AlertBanner';
 import { generateMockFootData } from '../utils/mockData';
 import { FootData } from '../utils/types';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { t } from '../i18n/translations';
 import * as Haptics from 'expo-haptics';
 
 const DashboardScreen: React.FC = () => {
   const { language, tr, speak } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
   const [data, setData] = useState<FootData>(generateMockFootData(true));
   const [lastMessage, setLastMessage] = useState<string | null>(null);
 
@@ -71,14 +74,98 @@ const DashboardScreen: React.FC = () => {
     return tr('goodEvening');
   };
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        scroll: { paddingBottom: 24 },
+        headerRow: { paddingHorizontal: 20, paddingTop: 12, alignItems: 'flex-start' },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        header: { paddingHorizontal: 20, paddingTop: 12, alignItems: 'center' },
+        greeting: { color: palette.lightGray, fontSize: 16, fontWeight: '600' },
+        title: { color: palette.white, fontSize: 28, fontWeight: '900', marginTop: 4, letterSpacing: 0.5 },
+        streakBadge: {
+          marginTop: 10,
+          backgroundColor: 'rgba(57, 255, 20, 0.15)',
+          paddingHorizontal: 16,
+          paddingVertical: 6,
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: palette.neonGreen,
+        },
+        streakText: { color: palette.neonGreen, fontWeight: '700', fontSize: 14 },
+        ringContainer: { alignItems: 'center', marginVertical: 20 },
+        avatarCard: {
+          backgroundColor: palette.cardBg,
+          marginHorizontal: 16,
+          borderRadius: 24,
+          padding: 16,
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: 'rgba(0, 245, 255, 0.2)',
+        },
+        sectionTitle: { color: palette.neonBlue, fontSize: 13, fontWeight: '800', letterSpacing: 2, marginBottom: 8 },
+        legend: { flexDirection: 'row', gap: 20, marginTop: 12 },
+        legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+        dot: { width: 12, height: 12, borderRadius: 6 },
+        legendText: { color: palette.lightGray, fontSize: 13, fontWeight: '600' },
+        zonesRow: { flexDirection: 'row', marginHorizontal: 16, marginTop: 16, gap: 12 },
+        zoneCard: {
+          flex: 1,
+          backgroundColor: palette.cardBg,
+          borderRadius: 18,
+          padding: 14,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.08)',
+        },
+        zoneSide: { color: palette.neonBlue, fontWeight: '800', fontSize: 13, letterSpacing: 1, marginBottom: 10, textAlign: 'center' },
+        zoneRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+        zoneLabel: { color: palette.textSecondary, fontSize: 13, fontWeight: '600' },
+        zoneBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
+        zoneBadgeText: { color: '#000', fontWeight: '800', fontSize: 12 },
+        actions: { marginHorizontal: 16, marginTop: 24 },
+        badgeUnlock: {
+          marginTop: 20,
+          backgroundColor: 'rgba(255, 215, 0, 0.15)',
+          borderRadius: 16,
+          padding: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          borderWidth: 1,
+          borderColor: palette.neonYellow,
+        },
+        badgeEmoji: { fontSize: 28 },
+        badgeText: { color: palette.neonYellow, fontSize: 16, fontWeight: '800' },
+      }),
+    [palette]
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      <StatusBar
+        barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={COLORS.background}
+      />
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.header}>
           <Text style={styles.greeting}>{getGreeting()}</Text>
           <Text style={styles.title}>Foot-Power Meter</Text>
@@ -200,153 +287,5 @@ const DashboardScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scroll: {
-    paddingBottom: 24,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    alignItems: 'center',
-  },
-  greeting: {
-    color: COLORS.lightGray,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  title: {
-    color: COLORS.white,
-    fontSize: 28,
-    fontWeight: '900',
-    marginTop: 4,
-    letterSpacing: 0.5,
-  },
-  streakBadge: {
-    marginTop: 10,
-    backgroundColor: 'rgba(57, 255, 20, 0.15)',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: COLORS.neonGreen,
-  },
-  streakText: {
-    color: COLORS.neonGreen,
-    fontWeight: '700',
-    fontSize: 14,
-  },
-  ringContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  avatarCard: {
-    backgroundColor: COLORS.cardBg,
-    marginHorizontal: 16,
-    borderRadius: 24,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 245, 255, 0.2)',
-  },
-  sectionTitle: {
-    color: COLORS.neonBlue,
-    fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 2,
-    marginBottom: 8,
-  },
-  legend: {
-    flexDirection: 'row',
-    gap: 20,
-    marginTop: 12,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  dot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  legendText: {
-    color: COLORS.lightGray,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  zonesRow: {
-    flexDirection: 'row',
-    marginHorizontal: 16,
-    marginTop: 16,
-    gap: 12,
-  },
-  zoneCard: {
-    flex: 1,
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 18,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  zoneSide: {
-    color: COLORS.neonBlue,
-    fontWeight: '800',
-    fontSize: 13,
-    letterSpacing: 1,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  zoneRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  zoneLabel: {
-    color: COLORS.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  zoneBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-  },
-  zoneBadgeText: {
-    color: '#000',
-    fontWeight: '800',
-    fontSize: 12,
-  },
-  actions: {
-    marginHorizontal: 16,
-    marginTop: 24,
-  },
-  badgeUnlock: {
-    marginTop: 20,
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    borderRadius: 16,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    borderWidth: 1,
-    borderColor: COLORS.neonYellow,
-  },
-  badgeEmoji: {
-    fontSize: 28,
-  },
-  badgeText: {
-    color: COLORS.neonYellow,
-    fontSize: 16,
-    fontWeight: '800',
-  },
-});
 
 export default DashboardScreen;

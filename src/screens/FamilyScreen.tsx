@@ -7,16 +7,21 @@ import {
   ScrollView,
   Linking,
   Alert,
+  StatusBar,
+  TouchableOpacity,
 } from 'react-native';
-import { COLORS } from '../utils/theme';
+import { COLORS, THEME_PALETTE } from '../utils/theme';
 import GiantButton from '../components/GiantButton';
 import { generateFamilyHistory } from '../utils/mockData';
 import { DayRecord } from '../utils/types';
 import * as Haptics from 'expo-haptics';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 const FamilyScreen: React.FC = () => {
   const { tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
   const [history, setHistory] = useState<DayRecord[]>([]);
   const [criticalAlert, setCriticalAlert] = useState(false);
 
@@ -44,9 +49,85 @@ const FamilyScreen: React.FC = () => {
 
   const safeDays = history.filter((d) => d.safe).length;
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        scroll: { paddingBottom: 40 },
+        headerRow: { paddingHorizontal: 20, paddingTop: 12, alignItems: 'flex-start' },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        header: { paddingHorizontal: 20, paddingTop: 16, alignItems: 'center' },
+        title: { color: palette.white, fontSize: 26, fontWeight: '900' },
+        subtitle: { color: palette.lightGray, fontSize: 14, marginTop: 4 },
+        summaryCard: {
+          marginHorizontal: 16,
+          marginTop: 20,
+          backgroundColor: palette.cardBg,
+          borderRadius: 24,
+          padding: 24,
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: 'rgba(57, 255, 20, 0.3)',
+        },
+        summaryEmoji: { fontSize: 48, marginBottom: 8 },
+        summaryTitle: { color: palette.neonGreen, fontSize: 20, fontWeight: '800', textAlign: 'center' },
+        summaryScore: { color: palette.lightGray, fontSize: 15, marginTop: 6 },
+        criticalBanner: {
+          marginHorizontal: 16,
+          marginTop: 16,
+          backgroundColor: 'rgba(255, 7, 58, 0.15)',
+          borderRadius: 20,
+          padding: 20,
+          borderWidth: 2,
+          borderColor: palette.neonRed,
+        },
+        criticalTitle: { color: palette.neonRed, fontSize: 18, fontWeight: '900', textAlign: 'center' },
+        criticalText: { color: palette.white, fontSize: 15, textAlign: 'center', marginTop: 8, lineHeight: 22 },
+        sectionTitle: { color: palette.neonBlue, fontSize: 13, fontWeight: '800', letterSpacing: 2, marginHorizontal: 20, marginTop: 28, marginBottom: 12 },
+        timeline: {
+          marginHorizontal: 16,
+          backgroundColor: palette.cardBg,
+          borderRadius: 20,
+          padding: 12,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.08)',
+        },
+        dayRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 8, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+        dayLeft: { flex: 1 },
+        dayDate: { color: palette.white, fontSize: 15, fontWeight: '700' },
+        dayScore: { color: palette.lightGray, fontSize: 13, marginTop: 2 },
+        dayRight: { alignItems: 'flex-end', gap: 4 },
+        checkCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: palette.neonGreen, alignItems: 'center', justifyContent: 'center' },
+        warnCircle: { backgroundColor: palette.neonYellow },
+        checkMark: { color: '#000', fontSize: 18, fontWeight: '900' },
+        warnMark: { color: '#000', fontSize: 18, fontWeight: '900' },
+        badgeMini: { color: palette.neonYellow, fontSize: 11, fontWeight: '700' },
+        actions: { marginHorizontal: 20, marginTop: 28 },
+        privacyNote: { color: palette.lightGray, fontSize: 12, textAlign: 'center', marginHorizontal: 28, marginTop: 24, lineHeight: 18, opacity: 0.7 },
+      }),
+    [palette]
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
+      <StatusBar
+        barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={COLORS.background}
+      />
       <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.header}>
           <Text style={styles.title}>{tr('guardianCorner')}</Text>
           <Text style={styles.subtitle}>{tr('familyView')}</Text>
@@ -130,159 +211,5 @@ const FamilyScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scroll: {
-    paddingBottom: 40,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    alignItems: 'center',
-  },
-  title: {
-    color: COLORS.white,
-    fontSize: 26,
-    fontWeight: '900',
-  },
-  subtitle: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-    marginTop: 4,
-  },
-  summaryCard: {
-    marginHorizontal: 16,
-    marginTop: 20,
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 24,
-    padding: 24,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(57, 255, 20, 0.3)',
-  },
-  summaryEmoji: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  summaryTitle: {
-    color: COLORS.neonGreen,
-    fontSize: 20,
-    fontWeight: '800',
-    textAlign: 'center',
-  },
-  summaryScore: {
-    color: COLORS.lightGray,
-    fontSize: 15,
-    marginTop: 6,
-  },
-  criticalBanner: {
-    marginHorizontal: 16,
-    marginTop: 16,
-    backgroundColor: 'rgba(255, 7, 58, 0.15)',
-    borderRadius: 20,
-    padding: 20,
-    borderWidth: 2,
-    borderColor: COLORS.neonRed,
-  },
-  criticalTitle: {
-    color: COLORS.neonRed,
-    fontSize: 18,
-    fontWeight: '900',
-    textAlign: 'center',
-  },
-  criticalText: {
-    color: COLORS.white,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 8,
-    lineHeight: 22,
-  },
-  sectionTitle: {
-    color: COLORS.neonBlue,
-    fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 2,
-    marginHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 12,
-  },
-  timeline: {
-    marginHorizontal: 16,
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 20,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  dayRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.05)',
-  },
-  dayLeft: {
-    flex: 1,
-  },
-  dayDate: {
-    color: COLORS.white,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  dayScore: {
-    color: COLORS.lightGray,
-    fontSize: 13,
-    marginTop: 2,
-  },
-  dayRight: {
-    alignItems: 'flex-end',
-    gap: 4,
-  },
-  checkCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: COLORS.neonGreen,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  warnCircle: {
-    backgroundColor: COLORS.neonYellow,
-  },
-  checkMark: {
-    color: '#000',
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  warnMark: {
-    color: '#000',
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  badgeMini: {
-    color: COLORS.neonYellow,
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  actions: {
-    marginHorizontal: 20,
-    marginTop: 28,
-  },
-  privacyNote: {
-    color: COLORS.lightGray,
-    fontSize: 12,
-    textAlign: 'center',
-    marginHorizontal: 28,
-    marginTop: 24,
-    lineHeight: 18,
-    opacity: 0.7,
-  },
-});
 
 export default FamilyScreen;

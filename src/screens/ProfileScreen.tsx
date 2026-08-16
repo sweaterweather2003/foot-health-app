@@ -9,15 +9,18 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from '../utils/theme';
+import { COLORS, THEME_PALETTE } from '../utils/theme';
 import GiantButton from '../components/GiantButton';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { LANGUAGES } from '../i18n/languages';
 
 const ProfileScreen: React.FC = () => {
   const { patient, logout, isAuthenticated } = useAuth();
   const { language, tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
 
   const langLabel =
     LANGUAGES.find((l) => l.code === language)?.label || language;
@@ -37,10 +40,65 @@ const ProfileScreen: React.FC = () => {
     );
   };
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        headerRow: { paddingHorizontal: 20, paddingTop: 12, alignItems: 'flex-start' },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        scroll: { paddingBottom: 40 },
+        headerCard: {
+          alignItems: 'center',
+          paddingVertical: 28,
+          paddingHorizontal: 20,
+          backgroundColor: palette.cardBg,
+          marginHorizontal: 16,
+          marginTop: 12,
+          borderRadius: 24,
+          borderWidth: 1,
+          borderColor: 'rgba(0, 245, 255, 0.2)',
+        },
+        avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(57, 255, 20, 0.15)', borderWidth: 3, borderColor: palette.neonGreen, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+        avatarText: { color: palette.neonGreen, fontSize: 32, fontWeight: '900' },
+        name: { color: palette.white, fontSize: 24, fontWeight: '900' },
+        phone: { color: palette.neonBlue, fontSize: 16, fontWeight: '700', marginTop: 4 },
+        badge: { marginTop: 12, backgroundColor: 'rgba(57, 255, 20, 0.15)', paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1, borderColor: palette.neonGreen },
+        badgeText: { color: palette.neonGreen, fontWeight: '800', fontSize: 13 },
+        section: { color: palette.neonBlue, fontSize: 12, fontWeight: '800', letterSpacing: 1.5, marginHorizontal: 20, marginTop: 24, marginBottom: 10 },
+        card: { backgroundColor: palette.cardBg, marginHorizontal: 16, borderRadius: 18, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+        row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+        rowLabel: { color: palette.lightGray, fontSize: 14, fontWeight: '600', flex: 1 },
+        rowValue: { color: palette.white, fontSize: 15, fontWeight: '700', flex: 1.4, textAlign: 'right' },
+        actions: { marginHorizontal: 20, marginTop: 32 },
+        footerNote: { color: palette.lightGray, fontSize: 12, textAlign: 'center', marginHorizontal: 28, marginTop: 16, lineHeight: 18, opacity: 0.7 },
+        emptyWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
+        emptyEmoji: { fontSize: 56, marginBottom: 12 },
+        emptyTitle: { color: palette.white, fontSize: 22, fontWeight: '900' },
+        emptyText: { color: palette.lightGray, fontSize: 15, textAlign: 'center', marginTop: 10, lineHeight: 22 },
+      }),
+    [palette]
+  );
+
   if (!patient) {
     return (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <StatusBar
+          barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor={COLORS.background}
+        />
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.emptyWrap}>
           <Text style={styles.emptyEmoji}>👤</Text>
           <Text style={styles.emptyTitle}>{tr('noProfileYet')}</Text>
@@ -69,7 +127,15 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      <StatusBar
+        barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={COLORS.background}
+      />
+      <View style={styles.headerRow}>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+          <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header card */}
         <View style={styles.headerCard}>
@@ -136,141 +202,5 @@ const ProfileScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  scroll: {
-    paddingBottom: 40,
-  },
-  headerCard: {
-    alignItems: 'center',
-    paddingVertical: 28,
-    paddingHorizontal: 20,
-    backgroundColor: COLORS.cardBg,
-    marginHorizontal: 16,
-    marginTop: 12,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 245, 255, 0.2)',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(57, 255, 20, 0.15)',
-    borderWidth: 3,
-    borderColor: COLORS.neonGreen,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  avatarText: {
-    color: COLORS.neonGreen,
-    fontSize: 32,
-    fontWeight: '900',
-  },
-  name: {
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: '900',
-  },
-  phone: {
-    color: COLORS.neonBlue,
-    fontSize: 16,
-    fontWeight: '700',
-    marginTop: 4,
-  },
-  badge: {
-    marginTop: 12,
-    backgroundColor: 'rgba(57, 255, 20, 0.15)',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: COLORS.neonGreen,
-  },
-  badgeText: {
-    color: COLORS.neonGreen,
-    fontWeight: '800',
-    fontSize: 13,
-  },
-  section: {
-    color: COLORS.neonBlue,
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-    marginHorizontal: 20,
-    marginTop: 24,
-    marginBottom: 10,
-  },
-  card: {
-    backgroundColor: COLORS.cardBg,
-    marginHorizontal: 16,
-    borderRadius: 18,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.05)',
-  },
-  rowLabel: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-  },
-  rowValue: {
-    color: COLORS.white,
-    fontSize: 15,
-    fontWeight: '700',
-    flex: 1.4,
-    textAlign: 'right',
-  },
-  actions: {
-    marginHorizontal: 20,
-    marginTop: 32,
-  },
-  footerNote: {
-    color: COLORS.lightGray,
-    fontSize: 12,
-    textAlign: 'center',
-    marginHorizontal: 28,
-    marginTop: 16,
-    lineHeight: 18,
-    opacity: 0.7,
-  },
-  emptyWrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-  },
-  emptyEmoji: {
-    fontSize: 56,
-    marginBottom: 12,
-  },
-  emptyTitle: {
-    color: COLORS.white,
-    fontSize: 22,
-    fontWeight: '900',
-  },
-  emptyText: {
-    color: COLORS.lightGray,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 10,
-    lineHeight: 22,
-  },
-});
 
 export default ProfileScreen;

@@ -9,6 +9,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { LanguageProvider, useLanguage } from './src/context/LanguageContext';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import DashboardScreen from './src/screens/DashboardScreen';
 import LiveWalkerScreen from './src/screens/LiveWalkerScreen';
 import FamilyScreen from './src/screens/FamilyScreen';
@@ -25,6 +26,7 @@ const Stack = createNativeStackNavigator();
 
 function MainTabs() {
   const { tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
 
   return (
     <Tab.Navigator
@@ -119,12 +121,14 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <NavigationContainer>
-            <StatusBar style="light" />
-            <RootNavigator />
-          </NavigationContainer>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <NavigationContainer>
+              <StatusBar style="light" />
+              <RootNavigator />
+            </NavigationContainer>
+          </AuthProvider>
+        </ThemeProvider>
       </LanguageProvider>
     </SafeAreaProvider>
   );

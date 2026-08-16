@@ -6,11 +6,14 @@ import {
   StyleSheet,
   Dimensions,
   Animated,
+  StatusBar,
+  TouchableOpacity,
 } from 'react-native';
-import { COLORS } from '../utils/theme';
+import { COLORS, THEME_PALETTE } from '../utils/theme';
 import GiantButton from '../components/GiantButton';
 import * as Haptics from 'expo-haptics';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +27,8 @@ interface Footprint {
 
 const LiveWalkerScreen: React.FC = () => {
   const { speak, tr } = useLanguage();
+  const { themeMode, toggleTheme } = useTheme();
+  const palette = themeMode === 'dark' ? THEME_PALETTE.dark : THEME_PALETTE.light;
   const [isWalking, setIsWalking] = useState(false);
   const [footprints, setFootprints] = useState<Footprint[]>([]);
   const [stepCount, setStepCount] = useState(0);
@@ -93,8 +98,53 @@ const LiveWalkerScreen: React.FC = () => {
     };
   }, []);
 
+  const styles = React.useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: palette.background },
+        headerRow: { paddingHorizontal: 20, paddingTop: 12, alignItems: 'flex-start' },
+        themeToggle: {
+          backgroundColor: 'rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.15)',
+        },
+        themeToggleText: { color: palette.white, fontSize: 12, fontWeight: '800' },
+        header: { paddingHorizontal: 20, paddingTop: 16, alignItems: 'center' },
+        title: { color: palette.white, fontSize: 26, fontWeight: '900' },
+        subtitle: { color: palette.lightGray, fontSize: 14, textAlign: 'center', marginTop: 6, lineHeight: 20 },
+        statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, marginHorizontal: 16 },
+        statBox: { backgroundColor: palette.cardBg, borderRadius: 16, paddingVertical: 12, paddingHorizontal: 18, alignItems: 'center', minWidth: 90, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+        statNum: { color: palette.white, fontSize: 28, fontWeight: '900' },
+        statLabel: { color: palette.lightGray, fontSize: 12, fontWeight: '600', marginTop: 2 },
+        pathArea: { flex: 1, marginHorizontal: 16, marginTop: 20, backgroundColor: palette.cardBg, borderRadius: 24, borderWidth: 2, borderColor: 'rgba(0, 245, 255, 0.25)', overflow: 'hidden', position: 'relative', minHeight: 280 },
+        pathLine: { position: 'absolute', top: '50%', left: 20, right: 20, height: 4, backgroundColor: 'rgba(0, 245, 255, 0.3)', borderRadius: 2 },
+        pathHint: { position: 'absolute', top: 16, alignSelf: 'center', color: palette.neonBlue, fontSize: 13, fontWeight: '700', letterSpacing: 1 },
+        footprint: { position: 'absolute', top: '42%', width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'rgba(255,255,255,0.4)' },
+        fpEmoji: { fontSize: 26 },
+        feedbackRow: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 16, marginHorizontal: 12 },
+        feedbackItem: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+        fbDot: { width: 14, height: 14, borderRadius: 7 },
+        fbText: { color: palette.lightGray, fontSize: 13, fontWeight: '600' },
+        controls: { marginHorizontal: 20, marginTop: 20, marginBottom: 12 },
+        tip: { color: palette.lightGray, fontSize: 12, textAlign: 'center', marginHorizontal: 24, marginBottom: 16, lineHeight: 18, opacity: 0.8 },
+      }),
+    [palette]
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
+      <StatusBar
+        barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
+        backgroundColor={COLORS.background}
+      />
+      <View style={styles.headerRow}>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+          <Text style={styles.themeToggleText}>{themeMode === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.header}>
         <Text style={styles.title}>{tr('liveWalkerCam')}</Text>
         <Text style={styles.subtitle}>{tr('walkSubtitle')}</Text>
@@ -180,135 +230,5 @@ const LiveWalkerScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    alignItems: 'center',
-  },
-  title: {
-    color: COLORS.white,
-    fontSize: 26,
-    fontWeight: '900',
-  },
-  subtitle: {
-    color: COLORS.lightGray,
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 6,
-    lineHeight: 20,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    marginHorizontal: 16,
-  },
-  statBox: {
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    alignItems: 'center',
-    minWidth: 90,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  statNum: {
-    color: COLORS.white,
-    fontSize: 28,
-    fontWeight: '900',
-  },
-  statLabel: {
-    color: COLORS.lightGray,
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  pathArea: {
-    flex: 1,
-    marginHorizontal: 16,
-    marginTop: 20,
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: 'rgba(0, 245, 255, 0.25)',
-    overflow: 'hidden',
-    position: 'relative',
-    minHeight: 280,
-  },
-  pathLine: {
-    position: 'absolute',
-    top: '50%',
-    left: 20,
-    right: 20,
-    height: 4,
-    backgroundColor: 'rgba(0, 245, 255, 0.3)',
-    borderRadius: 2,
-  },
-  pathHint: {
-    position: 'absolute',
-    top: 16,
-    alignSelf: 'center',
-    color: COLORS.neonBlue,
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  footprint: {
-    position: 'absolute',
-    top: '42%',
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.4)',
-  },
-  fpEmoji: {
-    fontSize: 26,
-  },
-  feedbackRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 16,
-    marginHorizontal: 12,
-  },
-  feedbackItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  fbDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-  },
-  fbText: {
-    color: COLORS.lightGray,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  controls: {
-    marginHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 12,
-  },
-  tip: {
-    color: COLORS.lightGray,
-    fontSize: 12,
-    textAlign: 'center',
-    marginHorizontal: 24,
-    marginBottom: 16,
-    lineHeight: 18,
-    opacity: 0.8,
-  },
-});
 
 export default LiveWalkerScreen;
